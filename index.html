@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image-Generator — ∞ Infinity System</title>
+  <meta name="description" content="Spin the slot machine, draw characters, play the token piano, generate images, and mint tokens — all in one Infinity System app." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg-clouds"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+    <div class="bg-glow bg-glow-4"></div>
+  </div>
+
+  <!-- ===== HAMBURGER DRAWER ===== -->
+  <div class="ham-overlay" id="hamOverlay"></div>
+  <nav class="ham-drawer" id="hamDrawer" aria-label="Navigation" aria-hidden="true">
+    <div class="ham-head">
+      <span class="ham-brand">∞ Image-Generator</span>
+      <button class="ham-close" id="hamClose" aria-label="Close menu">✕</button>
+    </div>
+    <div class="ham-section-label">🎨 Sections</div>
+    <a class="ham-link" href="#slot-section">🎰 Slot Machine</a>
+    <a class="ham-link" href="#draw-section">✏️ Draw Characters</a>
+    <a class="ham-link" href="#piano-section">🎹 Token Piano</a>
+    <a class="ham-link" href="#gen-section">🖼️ Image Generator</a>
+    <a class="ham-link" href="#token-section">🪙 Token Ledger</a>
+    <div class="ham-divider"></div>
+    <div class="ham-section-label">🌐 www-Infinity Projects</div>
+    <a class="ham-link" href="https://github.com/www-infinity4/Image-Generator" target="_blank" rel="noopener noreferrer">📁 GitHub Repo</a>
+    <a class="ham-link" href="https://github.com/www-infinity4/Mario-spin" target="_blank" rel="noopener noreferrer">🎮 Mario Spin</a>
+    <a class="ham-link" href="https://github.com/www-infinity4" target="_blank" rel="noopener noreferrer">🚀 GitHub Profile</a>
+    <div class="ham-divider"></div>
+    <div class="ham-section-label">ℹ️ How to Use</div>
+    <div style="padding:10px 16px;font-size:12px;color:var(--muted2);line-height:1.7">
+      <b style="color:var(--gold)">Slot:</b> Press SPACE or click SPIN<br>
+      <b style="color:var(--gold)">Piano:</b> A-S-D-F-G-H-J keys = white keys<br>
+      <b style="color:var(--gold)">Draw:</b> Paint a character, Save &amp; Mint<br>
+      <b style="color:var(--gold)">Mic:</b> Sing/whistle to auto-detect notes<br>
+    </div>
+    <div class="ham-divider"></div>
+    <div class="ham-footer">∞ Image-Generator v1.0</div>
+  </nav>
+
+  <!-- ===== LOGIN MODAL ===== -->
+  <div class="modal-overlay" id="loginOverlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <span class="modal-title" id="loginModalTitle">🔐 Account</span>
+        <button class="modal-close" id="loginClose" aria-label="Close login modal">✕</button>
+      </div>
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tabLogin"    data-tab="login">Sign In</button>
+        <button class="modal-tab"        id="tabRegister" data-tab="register">Sign Up</button>
+      </div>
+      <div class="modal-body" id="loginForm">
+        <div class="form-grid">
+          <label class="form-label">Username / Email</label>
+          <input class="form-input" id="loginUser" type="text"     autocomplete="username"         placeholder="Kris or email" />
+          <label class="form-label">Password</label>
+          <input class="form-input" id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••" />
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="btnLogin">Sign In</button>
+        </div>
+        <div class="auth-msg" id="loginMsg"></div>
+      </div>
+      <div class="modal-body" id="registerForm" style="display:none">
+        <div class="form-grid">
+          <label class="form-label">Username</label>
+          <input class="form-input" id="regUser"  type="text"     autocomplete="username"    placeholder="YourName" />
+          <label class="form-label">Email</label>
+          <input class="form-input" id="regEmail" type="email"    autocomplete="email"        placeholder="you@example.com" />
+          <label class="form-label">Password</label>
+          <input class="form-input" id="regPass"  type="password" autocomplete="new-password" placeholder="min 4 chars" />
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="btnRegister">Create Account</button>
+        </div>
+        <div class="auth-msg" id="registerMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOPBAR ===== -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="ham-btn" id="hamBtn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="hamDrawer">
+        <span class="ham-icon">☰</span>
+      </button>
+      <div class="topbar-brand">
+        <div class="topbar-icon">🎨</div>
+        <div>
+          <div class="topbar-kicker">∞ Infinity System</div>
+          <div class="topbar-name">Image-Generator</div>
+        </div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="user-badge" id="userBadge" style="display:none">
+        <span class="user-badge-name" id="userBadgeName"></span>
+        <span class="user-badge-role" id="userBadgeRole"></span>
+        <button class="btn btn-xs btn-ghost" id="logoutBtn">Sign Out</button>
+      </div>
+      <button class="btn btn-xs" id="loginBtn">🔐 Sign In</button>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- HERO -->
+    <section class="hero">
+      <h1 class="hero-title">🎨 Image-Generator</h1>
+      <p class="hero-sub">
+        Spin the slot machine · Draw your own characters · Play the token piano ·
+        Generate images from wins · Sing or whistle to mint sound tokens.
+        Every action mints a permanent token.
+      </p>
+      <div class="token-flow" aria-hidden="true">
+        <span class="tf-step">🎰 Spin</span><span class="tf-arrow">→</span>
+        <span class="tf-step">✏️ Draw</span><span class="tf-arrow">→</span>
+        <span class="tf-step">🎹 Play</span><span class="tf-arrow">→</span>
+        <span class="tf-step">🖼️ Generate</span><span class="tf-arrow">→</span>
+        <span class="tf-step">🪙 Mint</span>
+      </div>
+    </section>
+
+    <!-- ===== SLOT MACHINE ===== -->
+    <div id="slot-section">
+      <div class="section-header">
+        <h2>🎰 Slot Machine</h2>
+        <span class="sh-hint">Space or SPIN &amp; GO! · Wins auto-generate combo images</span>
+      </div>
+
+      <section class="machine-wrap">
+        <div class="machine" id="machine">
+          <div class="machine-top">
+            <div class="machine-title-bar">
+              <span class="machine-jackpot-light" id="jLight1"></span>
+              <span class="machine-title-text">🌟 IMAGE-GENERATOR SLOT 🌟</span>
+              <span class="machine-jackpot-light" id="jLight2"></span>
+            </div>
+            <div class="machine-ticker" id="ticker">IMAGE GENERATOR ACTIVE — SPIN · DRAW · PLAY · MINT ∞</div>
+          </div>
+
+          <!-- Reels -->
+          <div class="reels-outer">
+            <div class="reels-window">
+              <div class="reels" id="reels">
+                <div class="reel" id="reel0"><div class="reel-strip" id="strip0"></div></div>
+                <div class="reel-separator"></div>
+                <div class="reel" id="reel1"><div class="reel-strip" id="strip1"></div></div>
+                <div class="reel-separator"></div>
+                <div class="reel" id="reel2"><div class="reel-strip" id="strip2"></div></div>
+                <div class="reel-separator"></div>
+                <div class="reel" id="reel3"><div class="reel-strip" id="strip3"></div></div>
+                <div class="reel-separator"></div>
+                <div class="reel" id="reel4"><div class="reel-strip" id="strip4"></div></div>
+              </div>
+              <div class="reels-shine"    aria-hidden="true"></div>
+              <div class="reels-scanline" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <!-- Result -->
+          <div class="result-bar" id="resultBar">
+            <span class="result-text" id="resultText">Pull the lever or press SPIN!</span>
+          </div>
+
+          <!-- Controls -->
+          <div class="controls">
+            <div class="bet-area">
+              <label class="bet-label">SPINS</label>
+              <div class="spin-counter" id="spinCounter">0</div>
+            </div>
+            <button class="spin-btn" id="spinBtn" aria-label="Spin the slot machine">
+              <span class="spin-btn-icon">🍄</span>
+              <span class="spin-btn-label">SPIN &amp; GO!</span>
+            </button>
+            <div class="bet-area">
+              <label class="bet-label">SCORE</label>
+              <div class="spin-counter" id="scoreCounter">0</div>
+            </div>
+          </div>
+
+          <!-- Lever -->
+          <div class="lever-wrap" aria-hidden="true">
+            <div class="lever-track">
+              <div class="lever" id="lever">
+                <div class="lever-ball"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Win flash overlay -->
+        <div class="win-overlay" id="winOverlay" aria-live="assertive" aria-atomic="true"></div>
+      </section>
+
+      <!-- Spin History -->
+      <section class="panel">
+        <div class="panel-head">
+          <span class="panel-title">📜 Spin History</span>
+          <span class="panel-hint" id="spinHistoryCount">0 spins</span>
+        </div>
+        <div class="history" id="spinHistory"></div>
+      </section>
+    </div>
+
+    <!-- ===== CHARACTER DRAWING TOOL ===== -->
+    <div id="draw-section">
+      <div class="section-header">
+        <h2>✏️ Draw Your Character</h2>
+        <span class="sh-hint">Paint a custom symbol · Save &amp; Mint to inject it into the slot reels!</span>
+      </div>
+      <section class="panel">
+        <div class="panel-head">
+          <span class="panel-title">✏️ Character Draw Pad</span>
+          <span class="panel-hint">A-S-D keys: brush/eraser/fill · Touch &amp; mouse supported</span>
+        </div>
+        <div id="drawContainer"></div>
+      </section>
+    </div>
+
+    <!-- ===== IMAGE GENERATOR ===== -->
+    <div id="gen-section">
+      <div class="section-header">
+        <h2>🖼️ Image Generator</h2>
+        <span class="sh-hint">Procedural canvas art in multiple styles — wins auto-generate combo images</span>
+      </div>
+      <section class="panel">
+        <div class="panel-head">
+          <span class="panel-title">🖼️ Generate Image</span>
+          <span class="panel-hint">pixel-art · abstract · geometric · glitch · combo</span>
+        </div>
+        <div class="panel-body">
+          <div class="gen-controls">
+            <label class="form-label" style="margin:0">Mode:</label>
+            <select class="gen-select" id="genMode"></select>
+            <label class="form-label" style="margin:0">Palette:</label>
+            <select class="gen-select" id="genPalette"></select>
+            <button class="btn" id="genBtn">🎲 Generate</button>
+          </div>
+          <div class="gen-canvas-wrap">
+            <canvas id="genCanvas" width="480" height="360"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Image Gallery -->
+      <section class="panel">
+        <div class="panel-head">
+          <span class="panel-title">🖼️ Generated Gallery</span>
+          <span class="panel-hint">Last 20 images (this session)</span>
+        </div>
+        <div class="image-gallery" id="imageGallery"></div>
+      </section>
+    </div>
+
+    <!-- ===== TOKEN PIANO ===== -->
+    <div id="piano-section">
+      <div class="section-header">
+        <h2>🎹 Token Piano</h2>
+        <span class="sh-hint">Every key = 1 NOTE token · Play 4+ notes in a row = TUNE token · Use keyboard (A S D F G H J = C D E F G A B)</span>
+      </div>
+
+      <section class="panel">
+        <div class="panel-head">
+          <span class="panel-title">🎹 Piano Keyboard</span>
+          <span class="panel-hint">Keys: A W S E D F T G Y H U J (2 octaves)</span>
+        </div>
+        <div id="pianoContainer"></div>
+      </section>
+
+      <!-- Background Mic Listener -->
+      <section class="panel">
+        <div class="panel-head">
+          <span class="panel-title">🎙️ Background Sound Listener</span>
+          <span class="panel-hint">Microphone pitch detection · sing, whistle, or play any instrument</span>
+        </div>
+        <div class="mic-section">
+          <div class="mic-row">
+            <button class="btn btn-sm" id="micStartBtn">🎙️ Start Listening</button>
+            <span class="mic-status" id="micStatus">Mic off — grant permission to begin</span>
+          </div>
+          <p style="font-size:13px;color:var(--muted2);line-height:1.6">
+            When active, the listener continuously analyses your microphone and detects musical pitches from
+            singing, whistling, humming, or playing an instrument. Each stable note is minted as a
+            <b style="color:var(--gold)">NOTE token</b>. Once you've played 4+ notes with less than
+            3 seconds of silence, a <b style="color:var(--gold)">TUNE token</b> is automatically minted
+            with an AI-categorised genre and a generated title.
+          </p>
+        </div>
+      </section>
+
+      <!-- Note log -->
+      <section class="panel">
+        <div class="panel-head">
+          <span class="panel-title">🎵 Note Log</span>
+          <span class="panel-hint">Recent notes detected (piano &amp; mic)</span>
+        </div>
+        <div class="note-log-wrap">
+          <div class="note-log-items" id="noteLog"></div>
+        </div>
+      </section>
+
+      <!-- Tune list -->
+      <section class="panel">
+        <div class="panel-head">
+          <span class="panel-title">🎶 Minted Tunes</span>
+          <span class="panel-hint">AI-categorised melody tokens</span>
+        </div>
+        <div class="tune-list-wrap">
+          <div id="tuneList"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== TOKEN LEDGER ===== -->
+    <div id="token-section">
+      <div class="section-header">
+        <h2>🪙 Token Ledger</h2>
+        <span class="sh-hint">All tokens minted this session — stored in browser localStorage</span>
+      </div>
+      <section class="panel">
+        <div class="panel-head">
+          <span class="panel-title">🪙 Token Ledger</span>
+          <div class="panel-head-actions">
+            <button class="btn btn-xs" id="exportTokensBtn">📦 Export JSON</button>
+            <button class="btn btn-xs btn-ghost" id="clearTokensBtn">🗑️ Clear</button>
+          </div>
+        </div>
+        <div class="token-stats" id="tokenStats"></div>
+        <div class="token-ledger" id="tokenLedger"></div>
+      </section>
+    </div>
+
+    <!-- Console Log -->
+    <section class="panel">
+      <div class="panel-head">
+        <span class="panel-title">🛰️ Console</span>
+        <button class="btn btn-xs btn-ghost" id="clearLog">Clear</button>
+      </div>
+      <pre class="console-log" id="consoleLog">System ready.\n</pre>
+    </section>
+
+    <!-- Admin (hidden) -->
+    <section class="panel" id="adminPanel" style="display:none">
+      <div class="panel-head">
+        <span class="panel-title">⚙️ Admin</span>
+        <span class="panel-hint">Admin only</span>
+      </div>
+      <div class="panel-body">
+        <p style="font-size:13px;color:var(--muted2)">Admin access confirmed. All systems operational.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span>🎨 Image-Generator — ∞ Infinity System</span>
+    <span>🪙 Every action is a token. Every token is forever.</span>
+  </footer>
+
+  <script src="assets/cfg.js"></script>
+  <script src="assets/tokens.js"></script>
+  <script src="assets/auth.js"></script>
+  <script src="assets/slot.js"></script>
+  <script src="assets/piano.js"></script>
+  <script src="assets/draw.js"></script>
+  <script src="assets/image-gen.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
